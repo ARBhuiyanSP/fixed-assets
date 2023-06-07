@@ -60,7 +60,7 @@ function get_receive_list_action_data($row){
 	
     $qr_url	= 'qrprintview.php?id='.$row["id"];
     $edit_url	= 'assets-edit.php?edit='.$row["id"];
-    $view_url 	= 'assets-view.php?id='.$row["id"];
+    $view_url 	= 'asset_details.php?id='.$row["id"];
     $assign_url = 'assign.php?id='.$row["id"];
     $action 	= "";
 	

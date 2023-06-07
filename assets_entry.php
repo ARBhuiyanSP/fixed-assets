@@ -42,17 +42,14 @@
 						<label for="id">Category</label><span class="reqfield"> ***required</span>
 						<select class="form-control select2" id="" name="category_id" required >
 							<option value="">Select</option>
-							<?php
-							$projectsData = getTableDataByTableName('suppliers');
-
-							if (isset($projectsData) && !empty($projectsData)) {
-								foreach ($projectsData as $data) {
-									?>
-									<option value="<?php echo $data['id']; ?>"><?php echo $data['name']; ?></option>
-									<?php
-								}
-							}
+							<?php 
+							$sqld	= "select id,cat_id,assets_category from categories ORDER BY id ASC";
+							$resultd = mysqli_query($conn, $sqld);
+							while($rowd=mysqli_fetch_array($resultd))
+								{
 							?>
+							<option value="<?php echo $rowd['assets_category'] ?>"><?php echo $rowd['assets_category'] ?></option>
+							<?php } ?>
 						</select>
 					</div>
 				</div>
