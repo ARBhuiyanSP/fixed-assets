@@ -39,17 +39,39 @@ if (isset($_POST['login_submit']) && !empty($_POST['login_submit'])) {
                 $lname      	=   $row->last_name;
                 $user_id    	=   $row->id;
                 $user_type		=   $row->user_type;
+                $role_id      =   $row->role_id;
                 $project_id		=   $row->project_id;
                 $warehouse_id	=   $row->warehouse_id;
+                $_SESSION['logged']['permissin_urls'] =   [];
                 unset($_SESSION['error']);
                 $_SESSION['success']                =   $fname.' '.$lname." have successfully loggedin!";
                 $_SESSION['logged']['user_name']    =   $fname.' '.$lname;
                 $_SESSION['logged']['user_id']      =   $user_id;
                 $_SESSION['logged']['user_type']	=   $user_type;
+                $_SESSION['logged']['role_id']    =   $role_id;
                 $_SESSION['logged']['project_id']	=   $project_id;
                 $_SESSION['logged']['warehouse_id']	=   $warehouse_id;
 
+
+                $_SESSION['logged']['ip']           =   $_SERVER['REMOTE_ADDR'];
+                $ip                                 =   $_SERVER['REMOTE_ADDR'];
+
+                    $role_query    = "SELECT t2.name AS permision_url FROM `permission_role` AS t1
+                    INNER JOIN permissions AS t2 ON t1.permission_id=t2.id
+                    WHERE t1.role_id='$role_id'";
+            $rResult = $conn->query($role_query);
+            if ($rResult->num_rows > 0) {
+                while ($rData = $rResult->fetch_assoc()) {
+                    $_SESSION['logged']['permissin_urls'][]=$rData['permision_url'];
+                }
+            }
+            
+                
+
                 $_SESSION['logged']['status']		=   true;
+
+mysqli_query($conn,"insert into userlog(userId,username,role_id,userIp) values('".$_SESSION['logged']['user_id']."','".$_SESSION['logged']['user_name']."','".$_SESSION['logged']['role_id']."','$ip')");
+
                 header("location: dashboard_top_menu.php");
                 exit();
             }else{

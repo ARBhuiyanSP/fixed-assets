@@ -886,3 +886,37 @@ function price_details_show(price_row_id,this_row_this){
             }
         });
 }
+
+function commonDeleteOperation(del_url, delete_id) {
+    swal({
+            title: 'Confirmed?',
+            text: "You will not be able to recover the data again!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Confirm",
+            cancelButtonText: 'Cancel',
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true
+        },
+        function() {
+            setTimeout(function() {
+                $.ajax({
+                    url: baseUrl + del_url,
+                    type: 'GET',
+                    dataType: 'json',
+                    data: 'delete_id=' + delete_id,
+                    success: function(response) {
+                        console.log(response)
+                        if (response.status == 'success') {
+                            $("#row_id_" + delete_id).hide("slow");
+                            swal("Deleted", response.message, "success");
+                        } else {
+                            swal("Failed!", response.message, "error");
+                        }
+                    },
+                    async: false // <- this turns it into synchronous
+                });
+            }, 2000);
+        });
+}

@@ -115,8 +115,8 @@ if (isset($_POST['receive_submit']) && !empty($_POST['receive_submit'])) {
          $conn->query($queryPro);
 		
 		
-		$query_inmb = "INSERT INTO `inv_materialbalance` (`mb_ref_id`,`mb_materialid`,`mb_date`,`mbin_qty`,`mbin_val`,`mbout_qty`,`mbout_val`,`mbprice`,`mbtype`,`mbserial`,`mbserial_id`,`mbunit_id`,`jvno`,`part_no`,`project_id`,`warehouse_id`,`approval_status`) VALUES ('$mb_ref_id','$mb_materialid','$mb_date','$mbin_qty','$mbin_val','$mbout_qty','$mbout_val','$mbprice','$mbtype','$mbserial','$mbunit_id','$unit','$jvno','$part_no','$project_id','$warehouse_id','$approval_status')";
-        $conn->query($query_inmb);
+		/* $query_inmb = "INSERT INTO `inv_materialbalance` (`mb_ref_id`,`mb_materialid`,`mb_date`,`mbin_qty`,`mbin_val`,`mbout_qty`,`mbout_val`,`mbprice`,`mbtype`,`mbserial`,`mbserial_id`,`mbunit_id`,`jvno`,`part_no`,`project_id`,`warehouse_id`,`approval_status`) VALUES ('$mb_ref_id','$mb_materialid','$mb_date','$mbin_qty','$mbin_val','$mbout_qty','$mbout_val','$mbprice','$mbtype','$mbserial','$mbunit_id','$unit','$jvno','$part_no','$project_id','$warehouse_id','$approval_status')";
+        $conn->query($query_inmb); */
 		
 		
 		/*
@@ -295,7 +295,7 @@ if(isset($_POST['receive_update_submit']) && !empty($_POST['receive_update_submi
 }
 
 
-if (isset($_POST['approve_submit']) && !empty($_POST['approve_submit'])) {
+if (isset($_POST['receive_approve_submit']) && !empty($_POST['receive_approve_submit'])) {
  
         /*
          *  Update Data Into inv_receive Table:
@@ -332,7 +332,7 @@ if (isset($_POST['approve_submit']) && !empty($_POST['approve_submit'])) {
 		
 
     $_SESSION['success']    =   "MRR Approve have been successfully completed.";
-    header("location: receive-list.php");
+    header("location: receive_approve.php?no=$mrr_no");
     exit();
 }
 

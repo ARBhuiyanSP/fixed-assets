@@ -7,6 +7,7 @@ include 'connection/connect.php';
 include 'helper/utilities.php';
 include 'includes/asset_entry_process.php';
 include 'includes/item_process.php';
+include 'includes/receive_process.php';
 /* 
 
 include 'includes/transfer_process.php';

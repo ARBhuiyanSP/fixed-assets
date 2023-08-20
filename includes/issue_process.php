@@ -45,7 +45,9 @@ if (isset($_POST['issue_submit']) && !empty($_POST['issue_submit'])) {
 				$quantity           = $_POST['quantity'][$count];
 				$use_in          	= $_POST['use_in'];
 				$total_amount       = $_POST['sub_total_amount'];
-				$remarks            = $_POST['remarks'];     
+				$remarks            = $_POST['remarks']; 
+
+				$issued_by            = $_SESSION['logged']['user_id'];       
 				
 				
 				if (is_uploaded_file($_FILES['file']['tmp_name'])) 
@@ -111,7 +113,7 @@ if (isset($_POST['issue_submit']) && !empty($_POST['issue_submit'])) {
 			/*
 			*  Insert Data Into inv_issue Table:
 			*/
-			$query2 = "INSERT INTO `inv_issue` (`issue_id`,`issue_date`,`use_in`,`total_amount`,`remarks`,`project_id`,`warehouse_id`,`issue_image`) VALUES ('$issue_id','$issue_date','$use_in','$total_amount','$remarks','$project_id','$warehouse_id','$issue_image')";
+			$query2 = "INSERT INTO `inv_issue` (`issue_id`,`issue_date`,`use_in`,`total_amount`,`remarks`,`project_id`,`warehouse_id`,`issued_by`,`issue_image`) VALUES ('$issue_id','$issue_date','$use_in','$total_amount','$remarks','$project_id','$warehouse_id','$issued_by','$issue_image')";
 			$result2 = $conn->query($query2);
 			
 			$_SESSION['success']    =   "Issue process have been successfully completed.";
