@@ -1,6 +1,62 @@
 <?php include('dashboard_top_menu_header.php'); ?>
   <!-- /.navbar -->
+	<script type="text/javascript">
+        $(document).ready(function(){
 
+            $(document).on('keydown', '.employeeid', function() {
+                
+                var id = this.id;
+                var splitid = id.split('_');
+                var index = splitid[1];
+
+                $( '#'+id ).autocomplete({
+                    source: function( request, response ) {
+                        $.ajax({
+                            url: "getDetails.php",
+                            type: 'post',
+                            dataType: "json",
+                            data: {
+                                search: request.term,request:1
+                            },
+                            success: function( data ) {
+                                response( data );
+                            }
+                        });
+                    },
+                    select: function (event, ui) {
+                        $(this).val(ui.item.label); // display the selected text
+                        var userid = ui.item.value; // selected id to input
+
+                        // AJAX
+                        $.ajax({
+                            url: 'getDetails.php',
+                            type: 'post',
+                            data: {userid:userid,request:2},
+                            dataType: 'json',
+                            success:function(response){
+                                
+                                var len = response.length;
+
+                                if(len > 0){
+                                    var id = response[0]['id'];
+                                    var name = response[0]['name'];
+                                    var designation = response[0]['designation'];
+                                    var department = response[0]['department'];
+                                    var division = response[0]['division'];
+
+                                    document.getElementById('name_'+index).value = name;
+                                    document.getElementById('designation_'+index).value = designation;
+                                    document.getElementById('department_'+index).value = department;
+                                    document.getElementById('division_'+index).value = division;
+                                }  
+                            }
+                        });
+                        return false;
+                    }
+                });
+            });
+        });
+    </script>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper" style="">
     <!-- Content Header (Page header) -->
@@ -37,10 +93,26 @@
           <div class="card-body">
             <form action="" method="post" name="add_name" id="receive_entry_form" enctype="multipart/form-data" onsubmit="showFormIsProcessing('receive_entry_form');">
 			<div class="row" id="div1" style="">
+				<div class="col-md-1">
+					<div class="form-group">
+						<label>PARENT</label>
+						<select id="" name="parent_id" class="form-control select2" required>
+							   <option value="">Select</option>
+							<?php 
+							$sqld	= "select id,parent_category from parentcategories ORDER BY id ASC";
+							$resultd = mysqli_query($conn, $sqld);
+							while($rowd=mysqli_fetch_array($resultd))
+								{
+							?>
+							<option value="<?php echo $rowd['id'] ?>"><?php echo $rowd['parent_category'] ?></option>
+							<?php } ?>
+						</select>
+					</div>
+				</div>
 				<div class="col-md-2">
 					<div class="form-group">
-						<label for="id">Category</label><span class="reqfield"> ***required</span>
-						<select class="form-control select2" id="" name="category_id" required >
+						<label>CATEGORY</label>
+						<select id="" name="category_id" class="form-control select2" required>
 							<option value="">Select</option>
 							<?php 
 							$sqld	= "select id,cat_id,assets_category from categories ORDER BY id ASC";
@@ -53,40 +125,106 @@
 						</select>
 					</div>
 				</div>
+				
+				
+				
+				
+				
+					 <!-- add-assets.php relation achy $grade    -->
+			
+			
 				<div class="col-md-2">
 					<div class="form-group">
-						<label for="id">Type/Quality</label><span class="reqfield"> ***required</span>
-						<select class="form-control select2" id="" name="quality" required >
+						<label>GRADE</label>
+						<select id="" name="grade_id" class="select2 form-control" required>
+								<option value="">Select</option>
+							<?php 
+							$sqld	= "select id,grade from grade ORDER BY id ASC";
+							$resultd = mysqli_query($conn, $sqld);
+							while($rowd=mysqli_fetch_array($resultd))
+								{
+							?>
+							<option value="<?php echo $rowd['grade'] ?>"><?php echo $rowd['grade'] ?></option>
+							<?php } ?>
+						</select>
+					</div>
+				</div>
+				
+				
+				
+				<div class="col-md-1">
+					<div class="form-group">
+						<label>TYPE</label>
+						<select id="" name="quality" class="form-control select2" required>
 							<option value="">Select</option>
-							<option value="Old">Old</option>
 							<option value="New">New</option>
+							<option value="Old">Old</option>
 						</select>
 					</div>
 				</div>
 				<div class="col-md-2">
 					<div class="form-group">
-						<label>Brand</label>
-						<input type="text" autocomplete="off" name="brand" id="" class="form-control" value="">
+						<label>BRAND</label>
+						<input type="text" name="brand" class="form-control" value="" autocomplete="off">
 					</div>
 				</div>
 				<div class="col-md-2">
 					<div class="form-group">
-						<label>Model No</label>
-						<input type="text" autocomplete="off" name="model" id="" class="form-control" value="">
+						<label>MODEL NO</label>
+						<input type="text" name="model" class="form-control" value="" autocomplete="off">
+					</div>
+				</div>
+				<div class="col-md-1">
+					<div class="form-group">
+						<label>WARRENTY</label>
+						<input type="text" name="warrenty" class="form-control" value="" autocomplete="off">
+					</div>
+				</div>
+				<div class="col-md-1">
+					<div class="form-group">
+						<label>PRICE</label>
+						<input type="text" name="price" class="form-control" value="" autocomplete="off">
+					</div>
+				</div>
+			</div>
+			<!--------------Employee-------------->
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<label class="field_title">Employee ID<span class="reqr"> ***</span></label>
+						<input type='text' name="requested_id" class='form-control employeeid' id='employeeid_1' placeholder='Enter employee id No' >
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label class="field_title">Employee Name</label>
+						<input type='text' name="request_person" class='form-control name' id='name_1'  >
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label class="field_title">Designation</label>
+						<input type='text' name="" class='form-control designation' id='designation_1' readonly >
 					</div>
 				</div>
 				<div class="col-md-2">
 					<div class="form-group">
-						<label>Warrrenty</label>
-						<input type="text" autocomplete="off" name="warrenty" id="" class="form-control" value="">
+						<label class="field_title">Department</label>
+						<input type='text' name="" class='form-control department' id='department_1' readonly >
 					</div>
 				</div>
 				<div class="col-md-2">
 					<div class="form-group">
-						<label>Price</label>
-						<input type="text" autocomplete="off" name="price" id="" class="form-control" value="">
+						<label class="field_title">Division</label>
+						<input type='text' name="" class='form-control division' id='division_1' readonly >
 					</div>
 				</div>
+			</div>
+			<!--------------Employee-------------->
+				
+				
+				
+			<div class="row">
 				<div class="col-md-2">
 					<div class="form-group">
 						<label for="id">Division</label><span class="reqfield"> ***required</span>
@@ -119,9 +257,9 @@
 						</select>
 					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<div class="form-group">
-						<label for="id">Floor</label><span class="reqfield"> ***required</span>
+						<label for="id">Floor</label><span class="reqfield"> ***</span>
 						<select class="form-control select2" id="" name="floor" required >
 							<option value="">Select</option>
 							<option value="KT-14">KT-14</option>
@@ -134,37 +272,21 @@
 						</select>
 					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<div class="form-group">
 						<label>Location</label>
 						<input type="text" autocomplete="off" name="location" id="" class="form-control" value="">
 					</div>
 				</div>
-				<div class="col-md-2">
-					<div class="form-group">
-						<label for="id">User</label><span class="reqfield"> ***required</span>
-						<select class="form-control select2" id="" name="user" required >
-							<option value="">Select</option>
-							<?php 
-							$sqldg	= "select employeeid,name from inv_employee ORDER BY name ASC";
-							$resultdg = mysqli_query($conn, $sqldg);
-							while($rowdg=mysqli_fetch_array($resultdg))
-								{
-							?>
-							<option value="<?php echo $rowdg['employeeid'] ?>"><?php echo $rowdg['employeeid'] ?> | <?php echo $rowdg['name'] ?></option>
-							<?php } ?>
-						</select>
-					</div>
-				</div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<div class="form-group">
 						<label>Purchase Date</label>
-						<input type="text" autocomplete="off" name="purchase_date" id="purchase_date" class="form-control datepicker" value="<?php echo date('Y-m-d'); ?>">
+						<input type="date" autocomplete="off" name="purchase_date" id="purchase_date" class="form-control datepicker" value="<?php echo date('Y-m-d'); ?>">
 					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<div class="form-group">
-						<label>Manufacture Year</label>
+						<label>Manu. Year</label>
 						<input type="text" autocomplete="off" name="year_manufacture" id="" class="form-control" value="">
 					</div>
 				</div>
@@ -180,12 +302,32 @@
 						<input type="text" autocomplete="off" name="origin" id="" class="form-control" value="">
 					</div>
 				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<input type="file" accept="image/*"  name="file" id="picture">
+						<p id="error1" style="display:none; color:#FF0000;">
+							Invalid Image Format! Image Format Must Be JPG, JPEG, PNG or GIF.
+						</p>
+						<p id="error2" style="display:none; color:#FF0000;">
+							Maximum File Size Limit is 500KB.
+						</p>
+						<script>
+							var loadFile = function (event) {
+								var output = document.getElementById('output');
+								output.src = URL.createObjectURL(event.target.files[0]);
+								output.onload = function () {
+									URL.revokeObjectURL(output.src) // free memory
+								}
+							};
+						</script>
+					</div>
+				</div>
 			</div>
 			<div class="row" style="">
 				<div class="col-md-12">
 					<div class="form-group">
-						<label>Remarks</label>
-						<textarea id="remarks" name="remarks" class="form-control" required></textarea>
+						<label>Assets's Description</label>
+						<textarea id="remarks" name="asset_description" class="form-control" required></textarea>
 					</div>
 				</div>
 				<div class="col-md-12">
@@ -250,7 +392,7 @@ $(function () {
     },
     errorElement: 'span',
     errorPlacement: function (error, element) {
-      error.addClass('invalid-feedback');
+      error.addClass('invalid-feeconnack');
       element.closest('.form-group').append(error);
     },
     highlight: function (element, errorClass, validClass) {

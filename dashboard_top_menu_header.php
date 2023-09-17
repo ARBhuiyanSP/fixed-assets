@@ -68,7 +68,14 @@ include 'includes/equipment_process.php';  */
   <link rel="stylesheet" href="plugins/codemirror/theme/monokai.css">
   <!-- SimpleMDE -->
   <link rel="stylesheet" href="plugins/simplemde/simplemde.min.css">
+  
+  
   <link rel="stylesheet" href="css/style.css">
+  
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  
   <link rel="icon" type="image/x-icon" href="dist/img/logo_icon.png">
 <style>
 		.background {
@@ -87,6 +94,9 @@ include 'includes/equipment_process.php';  */
 		}
 		.background > * {
 			z-index: 10;
+		}
+		.mborder{
+			background-color:#fff;
 		}
 		</style>
 		</head>

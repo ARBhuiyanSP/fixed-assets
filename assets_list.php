@@ -32,7 +32,7 @@
 				<h3 class="card-title">Assets List</h3>
 				<div class="card-tools">
 				  <button type="button" class="btn btn-tool"  onclick="window.location.href='assets_entry.php';">
-					<i class="fas fa-list"></i> New Asset Entry
+					<i class="fas fa-plus"></i> New Asset Entry
 				  </button>
 				</div>
 			  </div>
@@ -44,9 +44,8 @@
 						<table id="receive_data_list" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th>SL</th>
-									<th>User</th>
-									<th>
+									<th width="12%">User</th>
+									<th width="20%">
 										<select name="owner" id="owner" class="form-control">
 											<option value="">Select Owner/Division</option>
 											<?php 
@@ -59,10 +58,11 @@
 											?>
 										</select>
 									</th>
-									<th>Category</th>
-									<th>Inventory SL No</th>
-									<th>Assign Status</th>
-									<th>Action</th>
+									<th width="10%">Category</th>
+									<th width="15%">Inventory SL No</th>
+									<th width="5%">Status</th>
+									<th width="5%">QR</th>
+									<th width="33%">Action</th>
 								</tr>
 							</thead>
 						</table>
@@ -110,7 +110,7 @@ $(document).ready(function(){
     data:{is_owner:is_owner}
    },
    "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            if ( aData[5] == "Assigned" )
+            if ( aData[4] == "Assigned" )
             {
 				$('td', nRow).css('background-color', '#b01a33');
 				$('td', nRow).css('color', '#fff');

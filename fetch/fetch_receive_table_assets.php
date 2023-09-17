@@ -1,8 +1,8 @@
 <?php
 //fetch.php
 include('../connection/connect.php');
-$column = array("id", "user", "owner", "category", "inventory_sl_no", "assign_status");
-$query = "SELECT id, user, owner, category, inventory_sl_no, assign_status FROM assets";
+$column = array("id", "user", "owner", "category", "inventory_sl_no", "parent_id", "assign_status", "qr_image");
+$query = "SELECT id, user, owner, category, inventory_sl_no, parent_id, assign_status, qr_image FROM assets";
 $query .= " WHERE ";
 if(isset($_POST["is_owner"]))
 {
@@ -11,7 +11,7 @@ if(isset($_POST["is_owner"]))
 
 if(isset($_POST["search"]["value"]))
 	{
-		$query .= '(id LIKE "%'.$_POST["search"]["value"].'%" ';
+		$query .= '(qr_image LIKE "%'.$_POST["search"]["value"].'%" ';
 		$query .= 'OR user LIKE "%'.$_POST["search"]["value"].'%" ';
 		$query .= 'OR owner LIKE "%'.$_POST["search"]["value"].'%" ';
 		$query .= 'OR category LIKE "%'.$_POST["search"]["value"].'%" ';
@@ -45,32 +45,51 @@ while($row = mysqli_fetch_array($result))
 {
 	$actionData     =   get_receive_list_action_data($row);
  $sub_array = array();
- $sub_array[] = $row["id"];
  $sub_array[] = $row["user"];
  $sub_array[] = $row["owner"];
  $sub_array[] = $row["category"];
  $sub_array[] = $row["inventory_sl_no"];
  $sub_array[] = $row["assign_status"];
+ $sub_array[] = '<img src="'.$row["qr_image"].'" height="20px"/>';
  $sub_array[] = $actionData;
  $data[] = $sub_array;
  
 }
 
 function get_receive_list_action_data($row){
-	
-    $qr_url	= 'qrprintview.php?id='.$row["id"];
+	$qr_url	= 'qrprintview.php?id='.$row["id"];
     $edit_url	= 'assets-edit.php?edit='.$row["id"];
     $view_url 	= 'asset_details.php?id='.$row["id"];
     $assign_url = 'assign.php?id='.$row["id"];
+	
+	$transfer_url = 'transfer.php?id='.$row["id"];
+    $refund_url = 'refund.php?id='.$row["id"];
+    $inspection_url = 'inspection.php?id='.$row["id"];
+    $history_url = 'assets-history.php?id='.$row["id"].'&submit=';
+	
     $action 	= "";
 	
     $action.='<span><a class="action-icons c-delete" href="'.$edit_url.'" title="edit"><i class="fa fa-edit text-info mborder" style="padding:2px;margin:1px;border:1px solid gray;"></i></a></span>';
 							
-	$action.='<span><a class="action-icons c-approve" href="'.$view_url.'" title="View"><i class="fas fa-eye text-success mborder" style="padding:2px;margin:1px;border:1px solid gray;"></i></a></span>';
+	$action.='<span><a class="action-icons c-approve" href="'.$view_url.'" title="View"><i class="fas fa-eye text-success mborder" style="padding:2px;margin:1px;border:1px solid gray;"> Details</i></a></span>';
 	 
-	$action.='<span><a class="action-icons c-approve" href="'.$assign_url.'" title="Assign"><i class="fas fa-user text-warning mborder" style="padding:2px;margin:1px;border:1px solid gray;"></i></a></span>';
 	
-	$action.='<span><a class="action-icons c-approve" href="'.$qr_url.'" title="QR"><i class="fas fa-print text-success mborder" style="padding:2px;margin:1px;border:1px solid gray;"></i></a></span>';
+	
+	
+	
+	
+	if($row['assign_status']=='Assigned'){
+        $action.='<span><a class="action-icons c-delete" href="'.$transfer_url.'" title="Transfer"><i class="fas fa-users text-warning mborder" style="padding:2px;margin:1px;border:1px solid gray;"> TRN</i></a></span>';
+        $action.='<span><a class="action-icons c-delete" href="'.$refund_url.'" title="Return"><i class="fas fa-user-minus text-danger mborder" style="padding:2px;margin:1px;border:1px solid gray;"> RTN</i></a></span>';
+	   }else{
+		$action.='<span><a class="action-icons c-approve" href="'.$assign_url.'" title="Assign"><i class="fas fa-user-plus text-success mborder" style="padding:2px;margin:1px;border:1px solid gray;"> ASN</i></a></span>';
+       }
+	   
+	$action.='<span><a class="action-icons c-approve" href="'.$qr_url.'" title="QR"><i class="fas fa-print text-success mborder" style="padding:2px;margin:1px;border:1px solid gray;"> QR</i></a></span>';
+	
+	$action.='<span><a class="action-icons c-approve" href="'.$inspection_url.'" title="inspection"><i class="fas fa-check text-purple mborder" style="padding:2px;margin:1px;border:1px solid gray;"> INS</i></a></span>';
+	
+	$action.='<span><a class="action-icons c-approve" href="'.$history_url.'" title="inspection"><i class="fas fa-history text-info mborder" style="padding:2px;margin:1px;border:1px solid gray;"> HIST</i></a></span>';
 	
     return $action;
 
